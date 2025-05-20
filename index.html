@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Liquor Haven - Premium spirits, wines and craft beverages. Age verification required.">
+  <title>Liquor Haven - Premium Alcohol Retailer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Age Verification Modal -->
+  <div id="age-verification" class="age-verification">
+    <div class="verification-content">
+      <h2>Age Verification Required</h2>
+      <p>You must be 21 or older to enter this site</p>
+      <div class="verification-buttons">
+        <button onclick="verifyAge(true)" class="verify-btn confirm">I'm 21 or Older</button>
+        <button onclick="verifyAge(false)" class="verify-btn deny">I'm Under 21</button>
+      </div>
+      <p class="disclaimer">By entering this site you agree to our <a href="/terms">Terms of Service</a> and acknowledge that alcohol should be consumed responsibly.</p>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo">
+      <img src="images/logo.png" alt="Liquor Haven Logo" width="150">
+      <h1>Liquor Haven</h1>
+    </div>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content">
+    <section class="hero home-hero">
+      <div class="hero-content">
+        <h2>Discover Premium Spirits at Liquor Haven</h2>
+        <a href="products.html" class="btn">Explore Our Collection</a>
+      </div>
+      <img src="images/banner1-min.jpg" alt="Premium liquor selection" class="hero-banner">
+    </section>
+
+    <section class="featured">
+      <h2>Featured Collections</h2>
+      <div class="product-grid index-products" id="featured-products">
+        <!-- Dynamically loaded from products.js -->
+      </div>
+    </section>
+
+    <section class="responsible-drinking">
+      <h3>Enjoy Responsibly</h3>
+      <p>We advocate for the responsible consumption of alcohol. Please drink in moderation.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Liquor Haven. All rights reserved.</p>
+      <p class="legal">Must be 21+ to purchase alcohol. Please drink responsibly.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
