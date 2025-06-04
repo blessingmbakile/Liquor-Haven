@@ -1,167 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Liquor Haven - Premium spirits, wines and craft beverages. Age verification required.">
-  <title>Our Products - Liquor Haven</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <!-- Age Verification Modal -->
-  <div id="age-verification" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white">
-        <div class="modal-header border-0">
-          <h2 class="modal-title fs-3">Age Verification Required</h2>
-        </div>
-        <div class="modal-body text-center">
-          <p>You must be 21 or older to enter this site</p>
-          <div class="d-flex justify-content-center gap-3 my-4">
-            <button onclick="verifyAge(true)" class="btn btn-success px-4">I'm 21 or Older</button>
-            <button onclick="verifyAge(false)" class="btn btn-danger px-4">I'm Under 21</button>
+// Product Data
+const products = [
+  {
+    id: 1,
+    name: "Highland Single Malt Whiskey",
+    description: "Aged 12 years in oak barrels, this single malt offers notes of honey, oak, and a subtle smokiness.",
+    price: 59.99,
+    category: "whiskey",
+    abv: 40,
+    volume: "700ml",
+    origin: "Scotland",
+    image: "images/Highland-Single-Malt-Scotch-Whisky.png",
+    featured: true
+  },
+  {
+    id: 2,
+    name: "Kentucky Straight Bourbon",
+    description: "Small batch bourbon with caramel and vanilla notes, aged 8 years.",
+    price: 49.99,
+    category: "bourbon",
+    abv: 45,
+    volume: "750ml",
+    origin: "USA",
+    image: "images/Kentucky-Bourbon-Whiskey.jpg",
+    featured: true
+  },
+  {
+    id: 3,
+    name: "Premium Vodka",
+    description: "Ultra-smooth vodka distilled five times for exceptional purity.",
+    price: 29.99,
+    category: "vodka",
+    abv: 40,
+    volume: "750ml",
+    origin: "Russia",
+    image: "images/Haku-Japanese-Craft-Vodka.jpg",
+    featured: true
+  },
+];
+
+// Load Featured Products
+function loadFeaturedProducts() {
+  const featuredContainer = document.getElementById('featured-products');
+  
+  if (!featuredContainer) return;
+  
+  const featuredProducts = products.filter(product => product.featured);
+  
+  featuredProducts.forEach(product => {
+    const productCard = document.createElement('div');
+    productCard.className = 'col-md-4 mb-4';
+    productCard.innerHTML = `
+      <div class="card h-100">
+        <img src="${product.image}" class="card-img-top" alt="${product.name}">
+        <div class="card-body">
+          <h3 class="card-title h5">${product.name}</h3>
+          <div class="product-meta mb-2">
+            <span class="badge bg-warning">${product.abv}% ABV</span>
+            <span class="text-muted">${product.volume}</span>
           </div>
-          <p class="small text-muted">By entering this site you agree to our <a href="/terms" class="text-light">Terms of Service</a> and acknowledge that alcohol should be consumed responsibly.</p>
+          <p class="card-text">${product.description}</p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <p class="price h5 text-primary">$${product.price.toFixed(2)}</p>
+          <button class="btn btn-dark add-to-cart w-100" data-id="${product.id}">Add to Cart</button>
         </div>
       </div>
-    </div>
-  </div>
+    `;
+    featuredContainer.appendChild(productCard);
+  });
+}
 
-  <header class="bg-dark text-white sticky-top">
-    <div class="container">
-      <div class="d-flex flex-column flex-md-row align-items-center justify-content-between py-3">
-        <div class="logo d-flex align-items-center mb-3 mb-md-0">
-          <img src="images/logo.png" alt="Liquor Haven Logo" width="50" class="me-2">
-          <h1 class="h4 mb-0">Liquor Haven</h1>
-        </div>
-        <nav>
-          <ul class="nav nav-pills">
-            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="products.html" class="nav-link active" aria-current="page">Products</a></li>
-            <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-            <li class="nav-item"><a href="feedback.html" class="nav-link">Feedback</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <main class="container my-5">
-    <div class="row mb-4">
-      <div class="col-md-8 mx-auto">
-        <div class="input-group">
-          <input type="text" id="search-bar" class="form-control" placeholder="Search for a product...">
-          <button class="btn btn-outline-secondary" type="button" id="search-btn">Search</button>
-        </div>
-        <div class="product-grid products-page">
-          <div class="product-card">
-            <img src="images/Highland-Single-Malt-Scotch-Whisky.png" alt="Highland Single Malt Whiskey">
-            <div class="product-info">
-              <h3>Highland Single Malt</h3>
-              <div class="product-meta">
-                <span class="abv-badge">43% ABV</span>
-                <span class="price">$49.99</span>
-              </div>
-              <button class="add-to-cart" data-id="1">Add to Cart</button>
-            </div>
-          </div>
-          
-          <div class="product-card">
-            <img src="images/Kentucky-Bourbon-Whiskey.jpg" alt="Kentucky Bourbon">
-            <div class="product-info">
-              <h3>Kentucky Bourbon</h3>
-              <div class="product-meta">
-                <span class="abv-badge">45% ABV</span>
-                <span class="price">$39.99</span>
-              </div>
-              <button class="add-to-cart" data-id="2">Add to Cart</button>
-            </div>
-          </div>
-          
-          <div class="product-card">
-            <img src="images/Haku-Japanese-Craft-Vodka.jpg" alt="Premium Vodka">
-            <div class="product-info">
-              <h3>Premium Vodka</h3>
-              <div class="product-meta">
-                <span class="abv-badge">40% ABV</span>
-                <span class="price">$29.99</span>
-              </div>
-              <button class="add-to-cart" data-id="3">Add to Cart</button>
-            </div>
-          </div>
-          
-          <div class="product-card">
-            <img src="images/Dewars-8-Year-Old-Caribbean-Smooth.png" alt="Aged Caribbean Rum">
-            <div class="product-info">
-              <h3>Aged Caribbean Rum</h3>
-              <div class="product-meta">
-                <span class="abv-badge">42% ABV</span>
-                <span class="price">$34.99</span>
-              </div>
-              <button class="add-to-cart" data-id="4">Add to Cart</button>
-            </div>
-          </div>
-          
-          <div class="product-card">
-            <img src="images/London-Dry-Gin.jpg" alt="Craft London Dry Gin">
-            <div class="product-info">
-              <h3>Craft London Dry Gin</h3>
-              <div class="product-meta">
-                <span class="abv-badge">47% ABV</span>
-                <span class="price">$36.99</span>
-              </div>
-              <button class="add-to-cart" data-id="5">Add to Cart</button>
-            </div>
-          </div>
-          
-          <div class="product-card">
-            <img src="images/Don-Julio-Anejo-Tequila.jpg" alt="Tequila Añejo">
-            <div class="product-info">
-              <h3>Tequila Añejo</h3>
-              <div class="product-meta">
-                <span class="abv-badge">40% ABV</span>
-                <span class="price">$54.99</span>
-              </div>
-              <button class="add-to-cart" data-id="6">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-      </main>
-    
-      <!-- Cart Modal -->
-      <div id="cart-modal" class="cart-modal hidden">
-        <div class="cart-header">
-          <h2>Your Cart</h2>
-          <button class="close-cart" onclick="toggleCart()">&times;</button>
-        </div>
-        <ul id="cart-items"></ul>
-        <div class="cart-footer">
-          <p class="cart-total">Total: $<span id="cart-total">0.00</span></p>
-          <div class="cart-actions">
-            <button class="btn clear-cart" onclick="clearCart()">Clear Cart</button>
-            <button class="btn checkout" onclick="checkout()">Proceed to Checkout</button>
-          </div>
-        </div>
-      </div>
-      <div id="cart-overlay" class="cart-overlay hidden"></div>
-    
-      <button id="cart-toggle-btn" onclick="toggleCart()">
-        🛒 Cart
-        <span class="cart-badge">0</span>
-      </button>
-  <footer class="bg-dark text-white py-4">
-    <div class="container text-center">
-      <p class="mb-1">&copy; 2025 Liquor Haven. All rights reserved.</p>
-      <p class="small text-muted mb-0">Must be 21+ to purchase alcohol. Please drink responsibly.</p>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="auth.js"></script>
-  <script src="products.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+// Initialize products when DOM is loaded
+document.addEventListener('DOMContentLoaded', loadFeaturedProducts);
