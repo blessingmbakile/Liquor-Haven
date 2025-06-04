@@ -1,60 +1,66 @@
-// Products data (add at the top of script.js)
+// Products data (single source consistent with products.js, fields reduced for cart usage)
 const products = [
   {
     id: 1,
-    name: "Highland Single Malt",
-    price: 49.99,
-    image: "images/highland-single-malt.png"
+    name: "Highland Single Malt Whiskey",
+    price: 59.99,
+    image: "images/Highland-Single-Malt-Scotch-Whisky.png"
   },
   {
     id: 2,
-    name: "Kentucky Bourbon",
-    price: 39.99,
-    image: "images/kentucky-bourbon.png"
+    name: "Kentucky Straight Bourbon",
+    price: 49.99,
+    image: "images/Kentucky-Bourbon-Whiskey.jpg"
   },
   {
     id: 3,
     name: "Premium Vodka",
     price: 29.99,
-    image: "images/premium-vodka.png"
+    image: "images/Haku-Japanese-Craft-Vodka.jpg"
   },
   {
     id: 4,
     name: "Aged Caribbean Rum",
     price: 34.99,
-    image: "images/aged-rum.png"
+    image: "images/Dewars-8-Year-Old-Caribbean-Smooth.png"
   },
   {
     id: 5,
     name: "Craft London Dry Gin",
     price: 36.99,
-    image: "images/craft-gin.png"
+    image: "images/London-Dry-Gin.jpg"
   },
   {
     id: 6,
     name: "Tequila Añejo",
     price: 54.99,
-    image: "images/tequila-anejo.png"
+    image: "images/Don-Julio-Anejo-Tequila.jpg"
   }
 ];
 
-// Toggle cart function (add to script.js)
+// Toggle cart function – use active class consistently
 function toggleCart() {
-  document.getElementById('cart-modal').classList.toggle('hidden');
-  document.getElementById('cart-overlay').classList.toggle('hidden');
+  const cartModal = document.getElementById('cart-modal');
+  const cartOverlay = document.getElementById('cart-overlay');
+  cartModal.classList.toggle('active');
+  cartOverlay.classList.toggle('active');
 }
 
-// Checkout function (add to script.js)
+// Checkout function with purchase simulation
 function checkout() {
   if (cart.length === 0) {
     alert("Your cart is empty!");
     return;
   }
   
-  alert("Proceeding to checkout! Total: $" + 
-    cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
-  clearCart();
-  toggleCart();
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+  
+  if (confirm(`Your total is $${total}. Would you like to proceed with the purchase?`)) {
+    // Simulate purchase: clear cart, update UI, hide cart modal
+    alert("Thank you for your purchase! Your order has been placed.");
+    clearCart();
+    toggleCart();
+  }
 }
 
 // Cart System
@@ -71,11 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cart Management
 function addToCart(productId) {
   const product = products.find(p => p.id === productId);
-  
   if (!product) return;
   
   const existingItem = cart.find(item => item.id === productId);
-  
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
@@ -87,9 +91,9 @@ function addToCart(productId) {
       image: product.image
     });
   }
-  
   saveCart();
   updateCartUI();
+  showCartNotification(`${product.name} added to cart.`);
 }
 
 function removeFromCart(productId) {
@@ -100,7 +104,6 @@ function removeFromCart(productId) {
 
 function updateQuantity(productId, newQuantity) {
   const item = cart.find(item => item.id === productId);
-  
   if (item) {
     item.quantity = Math.max(1, newQuantity);
     saveCart();
@@ -124,6 +127,20 @@ function updateCartUI() {
   if (document.getElementById('cart-items')) {
     renderCartItems();
   }
+}
+
+// Show notification for cart actions
+function showCartNotification(message) {
+  let notification = document.createElement('div');
+  notification.className = 'cart-notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    notification.addEventListener('animationend', () => {
+      notification.remove();
+    });
+  }, 1500);
 }
 
 function updateCartBadge() {
@@ -164,15 +181,15 @@ function renderCartItems() {
         <div>
           <h4>${item.name}</h4>
           <div class="cart-item-controls">
-            <button class="quantity-btn minus" data-id="${item.id}">-</button>
+            <button class="quantity-btn minus" data-id="${item.id}" aria-label="Decrease quantity of ${item.name}">-</button>
             <span>${item.quantity}</span>
-            <button class="quantity-btn plus" data-id="${item.id}">+</button>
+            <button class="quantity-btn plus" data-id="${item.id}" aria-label="Increase quantity of ${item.name}">+</button>
           </div>
         </div>
       </div>
       <div class="cart-item-price">
         $${itemTotal.toFixed(2)}
-        <button class="remove-item" data-id="${item.id}">×</button>
+        <button class="remove-item" data-id="${item.id}" aria-label="Remove ${item.name} from cart">×</button>
       </div>
     `;
     cartItemsEl.appendChild(li);
@@ -194,11 +211,14 @@ function setupCartEventListeners() {
     if (e.target.classList.contains('quantity-btn')) {
       const productId = parseInt(e.target.dataset.id);
       const item = cart.find(item => item.id === productId);
+      if (!item) return;
       
       if (e.target.classList.contains('plus')) {
         updateQuantity(productId, item.quantity + 1);
       } else if (e.target.classList.contains('minus')) {
-        updateQuantity(productId, item.quantity - 1);
+        if (item.quantity > 1) {
+          updateQuantity(productId, item.quantity - 1);
+        }
       }
     }
     
@@ -209,10 +229,11 @@ function setupCartEventListeners() {
     }
   });
   
-  // Cart toggle
+  // Cart toggle using event listener only (remove inline onclick in HTML)
   const cartToggle = document.getElementById('cart-toggle-btn');
-  const cartModal = document.querySelector('.cart-modal');
-  const cartOverlay = document.querySelector('.cart-overlay');
+  const cartModal = document.getElementById('cart-modal');
+  const cartOverlay = document.getElementById('cart-overlay');
+  const checkoutBtn = document.querySelector('.checkout');
   
   if (cartToggle && cartModal && cartOverlay) {
     cartToggle.addEventListener('click', () => {
@@ -225,40 +246,74 @@ function setupCartEventListeners() {
       cartOverlay.classList.remove('active');
     });
   }
+  
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', checkout);
+  }
 }
 
 // Search Functionality
 function setupSearchFunctionality() {
   const searchBar = document.getElementById('search-bar');
+  const searchBtn = document.getElementById('search-btn');
   
   if (searchBar) {
-    searchBar.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
+    const searchHandler = () => {
+      const searchTerm = searchBar.value.toLowerCase();
       
       document.querySelectorAll('.product-card').forEach(card => {
         const title = card.querySelector('h3').textContent.toLowerCase();
-        card.style.display = title.includes(searchTerm) ? 'block' : 'none';
+        card.style.display = title.includes(searchTerm) ? '' : 'none';
       });
-    });
+    };
+    
+    searchBar.addEventListener('input', searchHandler);
+    
+    if (searchBtn) {
+      searchBtn.addEventListener('click', searchHandler);
+    }
   }
 }
 
-// Form Handlers
+// Form Handlers (unchanged from previous)
 function setupFormHandlers() {
+  // Name field validation for letters only
+  const nameFields = document.querySelectorAll('input[id="name"], input[id="username"]');
+  nameFields.forEach(field => {
+    field.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+  });
+
   // Contact Form
   const contactForm = document.getElementById('contact-form');
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const captcha = document.getElementById('captcha').value;
       
+      // Validate CAPTCHA
+      const captcha = document.getElementById('captcha').value;
       if (captcha !== "7") {
         alert("Please enter the correct CAPTCHA answer.");
         return;
       }
       
-      alert("Thank you for your message. We'll respond shortly.");
-      contactForm.reset();
+      // Validate other fields
+      let isValid = true;
+      const inputs = contactForm.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          input.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+        }
+      });
+      
+      if (isValid) {
+        alert("Thank you for your message. We'll respond shortly.");
+        contactForm.reset();
+      }
     });
   }
   
@@ -267,10 +322,14 @@ function setupFormHandlers() {
   if (feedbackForm) {
     feedbackForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const username = document.getElementById('username').value;
-      const review = document.getElementById('review').value;
+      const username = document.getElementById('username').value.trim();
+      const review = document.getElementById('review').value.trim();
       
-      if (!username || !review) return;
+      if (!username || !review) {
+        if (!username) document.getElementById('username').classList.add('is-invalid');
+        if (!review) document.getElementById('review').classList.add('is-invalid');
+        return;
+      }
       
       // Save to localStorage
       const feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
@@ -278,7 +337,7 @@ function setupFormHandlers() {
       localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
       
       // Display feedback
-      displayFeedback({ username, review });
+      displayFeedback({ username, review, date: new Date().toISOString() });
       feedbackForm.reset();
     });
     
@@ -293,6 +352,8 @@ function loadFeedback() {
   
   if (!reviewsList) return;
   
+  reviewsList.innerHTML = ''; // Clear existing reviews
+  
   feedbacks.forEach(feedback => {
     displayFeedback(feedback);
   });
@@ -303,6 +364,7 @@ function displayFeedback(feedback) {
   if (!reviewsList) return;
   
   const li = document.createElement('li');
+  li.className = 'list-group-item';
   li.innerHTML = `
     <strong>${feedback.username}</strong>
     <span class="feedback-date">${new Date(feedback.date).toLocaleDateString()}</span>
@@ -310,3 +372,4 @@ function displayFeedback(feedback) {
   `;
   reviewsList.appendChild(li);
 }
+

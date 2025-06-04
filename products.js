@@ -9,7 +9,7 @@ const products = [
     abv: 40,
     volume: "700ml",
     origin: "Scotland",
-    image: "images/Highland Single Malt.png",
+    image: "images/Highland-Single-Malt-Scotch-Whisky.png",
     featured: true
   },
   {
@@ -21,10 +21,21 @@ const products = [
     abv: 45,
     volume: "750ml",
     origin: "USA",
-    image: "images/Kentucky Bourbon.png",
+    image: "images/Kentucky-Bourbon-Whiskey.jpg",
     featured: true
   },
-  // Additional products...
+  {
+    id: 3,
+    name: "Premium Vodka",
+    description: "Ultra-smooth vodka distilled five times for exceptional purity.",
+    price: 29.99,
+    category: "vodka",
+    abv: 40,
+    volume: "750ml",
+    origin: "Russia",
+    image: "images/Haku-Japanese-Craft-Vodka.jpg",
+    featured: true
+  },
 ];
 
 // Load Featured Products
@@ -37,18 +48,22 @@ function loadFeaturedProducts() {
   
   featuredProducts.forEach(product => {
     const productCard = document.createElement('div');
-    productCard.className = 'product-card';
+    productCard.className = 'col-md-4 mb-4';
     productCard.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
-      <div class="product-info">
-        <h3>${product.name}</h3>
-        <div class="product-meta">
-          <span class="abv-badge">${product.abv}% ABV</span>
-          <span>${product.volume}</span>
+      <div class="card h-100">
+        <img src="${product.image}" class="card-img-top" alt="${product.name}">
+        <div class="card-body">
+          <h3 class="card-title h5">${product.name}</h3>
+          <div class="product-meta mb-2">
+            <span class="badge bg-warning">${product.abv}% ABV</span>
+            <span class="text-muted">${product.volume}</span>
+          </div>
+          <p class="card-text">${product.description}</p>
         </div>
-        <p>${product.description}</p>
-        <p class="price">$${product.price.toFixed(2)}</p>
-        <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+        <div class="card-footer bg-transparent">
+          <p class="price h5 text-primary">$${product.price.toFixed(2)}</p>
+          <button class="btn btn-dark add-to-cart w-100" data-id="${product.id}">Add to Cart</button>
+        </div>
       </div>
     `;
     featuredContainer.appendChild(productCard);

@@ -1,29 +1,27 @@
-// Age Verification System
+// Enhanced Age Verification System
 document.addEventListener('DOMContentLoaded', () => {
-    checkAgeVerification();
-  });
-  
-  function checkAgeVerification() {
-    const verification = document.getElementById('age-verification');
-    const verificationTime = localStorage.getItem('ageVerifiedTime');
-    const verificationDuration = 24 * 60 * 60 * 1000; // 24 hours
-    
-    // Check if verification has expired or doesn't exist
-    if (!verificationTime || (Date.now() - verificationTime > verificationDuration)) {
-      verification.style.display = 'flex';
-      document.body.classList.add('verification-active');
-      localStorage.removeItem('ageVerifiedTime');
-    }
+  const ageVerified = checkAgeVerification();
+  if (!ageVerified) {
+      const modal = new bootstrap.Modal(document.getElementById('age-verification'));
+      modal.show();
   }
+});
+
+function checkAgeVerification() {
+  const verificationTime = localStorage.getItem('ageVerifiedTime');
+  const verificationDuration = 24 * 60 * 60 * 1000; // 24 hours
   
-  function verifyAge(isOfAge) {
-    const verification = document.getElementById('age-verification');
-    
-    if (isOfAge) {
+  // Check if verification is valid
+  return verificationTime && (Date.now() - parseInt(verificationTime) <= verificationDuration);
+}
+
+function verifyAge(isOfAge) {
+  const modal = bootstrap.Modal.getInstance(document.getElementById('age-verification'));
+  
+  if (isOfAge) {
       localStorage.setItem('ageVerifiedTime', Date.now());
-      verification.style.display = 'none';
-      document.body.classList.remove('verification-active');
-    } else {
+      modal.hide();
+  } else {
       window.location.href = 'https://www.responsibility.org/';
-    }
   }
+}
